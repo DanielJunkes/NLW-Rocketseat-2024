@@ -1,3 +1,4 @@
+from typing import Dict, Tuple
 from sqlite3 import Connection
 
 class TripsRepository:
@@ -5,7 +6,7 @@ class TripsRepository:
     def __init__(self, conn: Connection) -> None:
         self.__conn = conn
     
-    def create_trip(self, trips_infos: dict) -> None:
+    def create_trip(self, trips_infos: Dict) -> None:
         cursor = self.__conn.cursor()
         cursor.execute(
             """
@@ -22,10 +23,17 @@ class TripsRepository:
         )
         self.__conn.commit()  
     
-    def find_trip_by_id(self, trip_id: str) -> dict:
+    def find_trip_by_id(self, trip_id: str) -> Tuple:
         cursor = self.__conn.cursor()
         cursor.execute(
             """ SELECT * FROM trips WHERE id =? """, (trip_id,)
             )
         trip = cursor.fetchone()
         return trip
+    
+    def update_status_trips(self, trip_id: str):
+        cursor = self.__conn.cursor()
+        cursor.execute(
+            """ UPDATE trips SET status = 1 WHERE id =? """, (trip_id,)
+        )
+        self.__conn.commit()
